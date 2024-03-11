@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "306074803703",
+    "project_id": "ig-clone-37877",
+    "storage_bucket": "ig-clone-37877.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306074803703:android:790c6591b2b263e528e2f2",
+        "android_client_info": {
+          "package_name": "com.da_chelimo.ig_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIZVMswEnqSTlexLcQQJjeLVhgW2XXTeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
