@@ -1,8 +1,9 @@
 package com.da_chelimo.ig_clone.models
 
 data class User(
+    val uid: String,
     var username: String,
-    var name: String,
+    var fullName: String,
     var userIcon: String?,
     val dateOfBirth: Long,
     var bio: String,
@@ -13,8 +14,9 @@ data class User(
 
     companion object {
         val TEST_USER = User(
+            uid = "123abc",
             username = "mini_chelimo",
-            name = "Mini Chelimo",
+            fullName = "Mini Chelimo",
             userIcon = null,
             dateOfBirth = 1709885460731,
             bio = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sed rhoncus lectus. Proin id est sit amet ipsum ultrices bibendum sollicitudin sit amet ligula. Ut laoreet ullamcorper mauris", //"In the lowlands, may we blossom",

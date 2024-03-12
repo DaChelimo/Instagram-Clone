@@ -11,26 +11,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.da_chelimo.ig_clone.models.NavigationItem
 import com.da_chelimo.ig_clone.models.Screens
-import com.da_chelimo.ig_clone.models.SignInOptions
+import com.da_chelimo.ig_clone.ui.screens.account.create_account.AddProfilePicScreen
 import com.da_chelimo.ig_clone.ui.screens.account.create_account.ConfirmationCodeScreen
+import com.da_chelimo.ig_clone.ui.screens.account.create_account.create_username.CreateUsernameScreen
+import com.da_chelimo.ig_clone.ui.screens.account.create_account.DateOfBirthScreen
+import com.da_chelimo.ig_clone.ui.screens.account.create_account.enter_name.EnterNameScreen
 import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountWithEmail
 import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountWithNumber
 import com.da_chelimo.ig_clone.ui.screens.account.sign_in.SignInScreen
 import com.da_chelimo.ig_clone.ui.screens.home.HomeScreen
 import com.da_chelimo.ig_clone.ui.screens.profile.ProfileScreen
+import com.da_chelimo.ig_clone.ui.screens.search.SearchScreen
 import com.da_chelimo.ig_clone.ui.theme.IGCloneTheme
-import com.da_chelimo.ig_clone.utils.getSerializableCompat
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
+
         setContent {
             IGCloneTheme {
                 // A surface container using the 'background' color from the theme
@@ -46,7 +51,10 @@ class MainActivity : ComponentActivity() {
                         startDestination = if (Firebase.auth.currentUser != null) Screens.Home.getNavRoute() else Screens.SignInScreen.getNavRoute()
                     ) {
                         composable(Screens.Home.getNavRoute()) {
-                            HomeScreen()
+                            HomeScreen(navController)
+                        }
+                        composable(Screens.Search.getNavRoute()) {
+                            SearchScreen()
                         }
 
                         composable(Screens.SignInScreen.getNavRoute()) {
@@ -54,20 +62,28 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(Screens.CreateAccountWithEmail.getNavRoute()) {
-                            CreateAccountWithEmail(navigateToConfirmationScreen = { email, signInOptions ->
-                                navController.navigate(
-                                    Screens.ConfirmationCode.navigateHere(email, signInOptions)
-                                )
-                            })
+                            CreateAccountWithEmail(navController, coroutineScope)
                         }
 
                         composable(Screens.CreateAccountWithNumber.getNavRoute()) {
-                            CreateAccountWithNumber(navigateToConfirmationScreen = { number, signInOptions ->
-                                navController.navigate(
-                                    Screens.ConfirmationCode.navigateHere(number, signInOptions)
-                                )
-                            })
+                            CreateAccountWithNumber(navController)
                         }
+
+                        composable(Screens.DateOfBirth.getNavRoute()) {
+                            DateOfBirthScreen(navController)
+                        }
+                        composable(Screens.CreateUsername.getNavRoute()) { backStackEntry ->
+                            val dateOfBirth = backStackEntry.arguments?.getString("DOB")?.toLong()!!
+
+                            CreateUsernameScreen(navController, dateOfBirth)
+                        }
+                        composable(Screens.EnterNameScreen.getNavRoute()) {
+                            EnterNameScreen(navController)
+                        }
+                        composable(Screens.AddProfilePicScreen.getNavRoute()) {
+                            AddProfilePicScreen(navController)
+                        }
+
 
 
                         // Composable with Arguments
@@ -77,16 +93,12 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(Screens.ConfirmationCode.getNavRoute()) { backStackEntry ->
-                            val email = backStackEntry.arguments?.getString("email")!!
-                            val signInOptions = backStackEntry.arguments?.getSerializableCompat(
-                                "signInOptions",
-                                SignInOptions::class.java
-                            )!!
+                            val number = backStackEntry.arguments?.getString("number")!!
 
                             ConfirmationCodeScreen(
-                                emailOrNumber = email,
-                                signInOptions = signInOptions,
-                                coroutineScope = coroutineScope
+                                number = number,
+                                coroutineScope = coroutineScope,
+                                navController = navController
                             )
                         }
                     }

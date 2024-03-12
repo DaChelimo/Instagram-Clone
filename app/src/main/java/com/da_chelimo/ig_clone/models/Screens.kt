@@ -22,18 +22,34 @@ enum class Screens {
 
     ConfirmationCode{
         override val baseRoute: String = "ConfirmationScreen"
-        override fun getNavRoute() = "ConfirmationScreen/{email}/{signInOptions}"
+        override fun getNavRoute() = "ConfirmationScreen/{number}"
+    },
+    DateOfBirth{
+        override val baseRoute: String = "DateOfBirth"
+    },
+    CreateUsername{
+        override val baseRoute: String = "CreateUsername"
+        override fun getNavRoute(): String = "CreateUsername/{DOB}"
+    },
+    EnterNameScreen{
+        override val baseRoute: String = "EnterName"
+    },
+    AddProfilePicScreen{
+        override val baseRoute: String = "AddProfilePic"
     },
 
     Home{
         override val baseRoute: String = "HomeScreen"
+    },
+    Search{
+        override val baseRoute: String = "SearchScreen"
     },
 
     Profile{
         override val baseRoute: String = "Profile"
 
         override fun getNavRoute(): String = "Profile/{userID}"
-        override fun navigateHere(vararg any: Any): String = "$baseRoute/${any.toList().first()}"
+        override fun navigateHere(vararg stringList: String): String = "$baseRoute/${stringList.toList().first()}"
     },
 
     SignInScreen{
@@ -52,9 +68,10 @@ enum class Screens {
 
 
     open val baseRoute = ""
-    open fun navigateHere(vararg any: Any): String {
-        var navigatedRoute = if (any.isEmpty()) baseRoute else "$baseRoute/"
-        any.forEach {
+    open fun navigateHere(vararg stringList: String): String {
+        var navigatedRoute = baseRoute
+
+        stringList.forEach {
             navigatedRoute += "/$it"
         }
         return navigatedRoute

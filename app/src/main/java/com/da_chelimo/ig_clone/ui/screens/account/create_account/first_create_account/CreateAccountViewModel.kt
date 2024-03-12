@@ -18,6 +18,11 @@ class CreateAccountViewModel : ViewModel() {
     val auth = Firebase.auth
     var verificationId: String? = null
 
+
+    suspend fun signInWithEmail(email: String, password: String, activity: Activity): AuthResult? {
+        return auth.createUserWithEmailAndPassword(email, password).await()
+    }
+
     fun signInWithNumber(number: String, activity: Activity) {
         val phoneAuthOptions = PhoneAuthOptions.Builder(Firebase.auth)
             .setPhoneNumber(number)
@@ -36,6 +41,7 @@ class CreateAccountViewModel : ViewModel() {
                     super.onCodeSent(id, forceResendingToken)
                     // The verification ID obtained in onCodeSent()
                     verificationId = id
+                    Timber.d("verificationId in onCodeSent is $verificationId")
                 }
             }) // Implement PhoneAuthProvider.OnVerificationStateChangedCallbacks
             .build()

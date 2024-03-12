@@ -72,6 +72,9 @@ dependencies {
 
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
+    implementation("androidx.compose.material:material:1.6.3")
+    implementation("com.github.jump-sdk:jetpack_compose_country_code_picker_emoji:2.2.7")
+
     implementation("net.danlew:android.joda:2.12.7")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
@@ -81,6 +84,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("com.google.dagger:hilt-android:2.50")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
 

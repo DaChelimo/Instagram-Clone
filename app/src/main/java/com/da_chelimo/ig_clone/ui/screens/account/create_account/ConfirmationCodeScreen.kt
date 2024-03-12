@@ -24,10 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.da_chelimo.ig_clone.models.SignInOptions
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.getSignInTextFieldColors
-import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountViewModel
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.Grey
@@ -40,7 +42,11 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
-fun ConfirmationCodeScreen(emailOrNumber: String, signInOptions: SignInOptions, coroutineScope: CoroutineScope) {
+fun ConfirmationCodeScreen(
+    number: String,
+    coroutineScope: CoroutineScope,
+    navController: NavHostController
+) {
     val viewModel = viewModel<CreateAccountViewModel>()
 
     Column(
@@ -56,7 +62,8 @@ fun ConfirmationCodeScreen(emailOrNumber: String, signInOptions: SignInOptions, 
         CreateAccountHeader(
             modifier = Modifier,
             mainTitle = "Enter the confirmation code",
-            description = "To confirm your account, enter the 6-digit code that we sent to $emailOrNumber",
+            description = "To confirm your account, enter the 6-digit code that we sent to $number",
+            navController = navController,
             backBtnContentDescription = "Go Back Button"
         )
 
@@ -93,6 +100,9 @@ fun ConfirmationCodeScreen(emailOrNumber: String, signInOptions: SignInOptions, 
                 coroutineScope.launch {
                     try {
                         viewModel.verifyConfirmationCode(code.value)
+                        navController.navigate(
+                            Screens.DateOfBirth.getNavRoute()
+                        )
                     } catch (e: Exception) {
                         Timber.e(e)
                     }
@@ -150,8 +160,8 @@ fun CodeTextField(
 @Composable
 fun PreviewConfirmationCode() {
     ConfirmationCodeScreen(
-        emailOrNumber = "andrewchelimo2000@gmail.com",
-        signInOptions = SignInOptions.EMAIL,
-        coroutineScope = rememberCoroutineScope()
+        number = "andrewchelimo2000@gmail.com",
+        coroutineScope = rememberCoroutineScope(),
+        navController = rememberNavController()
     )
 }

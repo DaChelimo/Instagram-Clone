@@ -1,4 +1,4 @@
-package com.da_chelimo.ig_clone.ui.screens.account.create_account
+package com.da_chelimo.ig_clone.ui.screens.account.create_account.enter_name
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,15 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.da_chelimo.ig_clone.models.Screens
 import com.da_chelimo.ig_clone.ui.components.sign_in.ClearFieldButton
+import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.getSignInTextFieldColors
-import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 
 @Composable
-fun EnterNameScreen() {
+fun EnterNameScreen(navController: NavController) {
+    val viewModel = viewModel<EnterNameViewModel>()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,6 +40,7 @@ fun EnterNameScreen() {
             modifier = Modifier.padding(top = 4.dp),
             mainTitle = "What's your name?",
             description = null,
+            navController = navController,
             backBtnContentDescription = "Go Back Button"
         )
 
@@ -65,6 +72,10 @@ fun EnterNameScreen() {
             onClick = {
                 fullName = fullName.trim()
 //                onProceedWithSignUp(signUpName.value)
+                if (fullName.isNotBlank()) {
+                    viewModel.enterName(fullName)
+                    navController.navigate(Screens.AddProfilePicScreen.getNavRoute())
+                }
             }
         )
     }
@@ -73,6 +84,6 @@ fun EnterNameScreen() {
 @Preview
 @Composable
 fun PreviewEnterNameScreen() {
-    EnterNameScreen()
+    EnterNameScreen(rememberNavController())
 }
 

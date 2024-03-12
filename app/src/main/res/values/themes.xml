@@ -3,4 +3,16 @@
 
     <style name="Theme.IGClone" parent="android:Theme.Material.Light.NoActionBar" />
     
+    <style name="SplashScreen" parent="Theme.SplashScreen">
+        <!-- Use windowSplashScreenAnimatedIcon to add a drawable or an animated
+           drawable. -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen</item>
+        <!-- Set the theme of the Activity that follows your splash screen. -->
+        <item name="postSplashScreenTheme">@style/Theme.IGClone</item>
+        <!-- Set a darkBlue background behind the splash screen icon. -->
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_black</item>
+        <!-- Set the splash screen background to black -->
+        <item name="windowSplashScreenBackground">@color/splash_black</item>
+
+    </style>
 </resources>

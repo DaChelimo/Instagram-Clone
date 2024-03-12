@@ -15,6 +15,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.da_chelimo.ig_clone.models.Screens
 import com.da_chelimo.ig_clone.ui.components.CircularUserImage
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
@@ -23,8 +27,10 @@ import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 import com.da_chelimo.ig_clone.ui.theme.TextFieldUnfocusedLabelBlue
 
 @Composable
-fun AddProfilePicScreen() {
-    Box(modifier = Modifier.fillMaxSize().background(SignInBlue)) {
+fun AddProfilePicScreen(navController: NavController) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(SignInBlue)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,7 +90,12 @@ fun AddProfilePicScreen() {
                 textColor = TextFieldUnfocusedLabelBlue,
                 containerColor = Color.Transparent,
                 outlineColor = TextFieldUnfocusedLabelBlue,
-                onClick = {}
+                onClick = {
+                    navController.navigate(Screens.Home.getNavRoute()) {
+//                        popUpTo(Screens.Home.getNavRoute())
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }
@@ -93,5 +104,5 @@ fun AddProfilePicScreen() {
 @Preview
 @Composable
 fun PreviewAddProfilePicScreen() {
-    AddProfilePicScreen()
+    AddProfilePicScreen(rememberNavController())
 }

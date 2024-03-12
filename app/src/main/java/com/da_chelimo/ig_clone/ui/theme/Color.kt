@@ -12,6 +12,7 @@ val Grey = Color(0xFF696969)
 val SignInBlue = Color(16,34,48,255)
 
 val TextFieldBackgroundBlue = Color(28,42,51,255)
+val DateOfBirthDialogColor = Color(26, 62, 85, 255)
 
 val TextFieldFocusedLabelBlue = Color(202,209,217,255)
 val TextFieldUnfocusedLabelBlue = Color(114,127,134,255)

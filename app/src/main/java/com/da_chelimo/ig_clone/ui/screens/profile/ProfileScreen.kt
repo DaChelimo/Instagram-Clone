@@ -1,6 +1,5 @@
 package com.da_chelimo.ig_clone.ui.screens.profile
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,7 +44,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -242,7 +240,7 @@ fun ProfileHeader(user: User?, editProfile: () -> Unit, shareProfile: () -> Unit
             )
         }
         Text(
-            text = user?.name ?: "",
+            text = user?.fullName ?: "",
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(top = 4.dp, start = 8.dp)

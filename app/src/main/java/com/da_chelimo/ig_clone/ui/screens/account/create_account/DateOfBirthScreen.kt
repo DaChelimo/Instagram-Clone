@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -25,19 +26,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.getSignInTextFieldColors
-import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
+import com.da_chelimo.ig_clone.ui.theme.DateOfBirthDialogColor
 import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 import com.da_chelimo.ig_clone.utils.getFormattedDateOfBirth
 import com.da_chelimo.ig_clone.utils.getYearsOld
 import com.da_chelimo.ig_clone.utils.is3YearsAndBelow
 import org.joda.time.DateTime
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateOfBirthScreen() {
+fun DateOfBirthScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,6 +58,7 @@ fun DateOfBirthScreen() {
             modifier = Modifier,
             mainTitle = "What's your date of birth?",
             description = "Use your own date of birth, even if this account is for a business, a pet or something else. No one will see this unless you choose to share it.",
+            navController = navController,
             backBtnContentDescription = "Go Back Button"
         )
 
@@ -67,7 +74,11 @@ fun DateOfBirthScreen() {
             onValueChange = {},
             modifier = Modifier
                 .padding(top = 16.dp)
-                .clickable { shouldOpenDateDialog = true },
+                .fillMaxWidth()
+                .clickable {
+                    shouldOpenDateDialog = true
+                    Timber.d("DOB clickable called with shouldOpenDateDialog as $shouldOpenDateDialog")
+                },
             isError = dateOfBirth.is3YearsAndBelow(),
             supportingText = {
                 if (dateOfBirth.is3YearsAndBelow())
@@ -84,12 +95,17 @@ fun DateOfBirthScreen() {
         if (shouldOpenDateDialog) {
             MaterialTheme(
                 colorScheme = darkColorScheme(
-                    surface = BrightBlue.copy(alpha = 150f),
-                    onSurface = Color.White
+                    surface = DateOfBirthDialogColor,
+                    onSurface = Color.White,
                 )
             ) {
                 DatePickerDialog(
                     onDismissRequest = { shouldOpenDateDialog = false },
+                    colors = DatePickerDefaults.colors(
+                        selectedDayContainerColor = Color.White,
+                        selectedDayContentColor = SignInBlue,
+                        todayDateBorderColor = Color.White
+                    ),
                     confirmButton = {
                         TextButton(onClick = {
                             dateOfBirth =
@@ -110,7 +126,10 @@ fun DateOfBirthScreen() {
                     DatePicker(
                         state = datePickerState,
                         colors = DatePickerDefaults.colors(
-                            containerColor = BrightBlue,
+                            selectedDayContainerColor = Color.White,
+                            selectedDayContentColor = SignInBlue,
+                            todayDateBorderColor = Color.White,
+                            containerColor = DateOfBirthDialogColor,
                             currentYearContentColor = Color.White
                         )
                     )
@@ -126,7 +145,7 @@ fun DateOfBirthScreen() {
             containerColor = BrightBlue,
             outlineColor = Color.Transparent,
             onClick = {
-//                onProceedWithSignUp(signUpName.value)
+                navController.navigate(Screens.CreateUsername.navigateHere(dateOfBirth.toString()))
             }
         )
     }
@@ -135,5 +154,5 @@ fun DateOfBirthScreen() {
 @Preview
 @Composable
 fun PreviewDateOfBirthScreen() {
-    DateOfBirthScreen()
+    DateOfBirthScreen(rememberNavController())
 }

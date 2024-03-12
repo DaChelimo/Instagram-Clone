@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ButtonDefaults
@@ -45,8 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.da_chelimo.ig_clone.R
-import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountScreen
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.ErrorRed
 import com.da_chelimo.ig_clone.ui.theme.Grey
@@ -57,34 +58,24 @@ import com.da_chelimo.ig_clone.ui.theme.TextFieldFocusedLabelBlue
 import com.da_chelimo.ig_clone.ui.theme.TextFieldUnfocusedBorderBlue
 import com.da_chelimo.ig_clone.ui.theme.TextFieldUnfocusedLabelBlue
 
-
-@Preview
 @Composable
-fun PreviewCreateAccountScreen() {
-    CreateAccountScreen(
-        mainTitle = "What's your mobile number?",
-        description = "Enter the mobile number on which you can be contacted. No one will see this on your profile.",
-        signUpLabel = "Mobile number",
-        isError = { false },
-        errorText = "Enter a valid mobile number",
-        onProceedWithSignUp = {},
-        alternativeSignUpText = "Sign up with email address",
-        onUseAlternativeSingUp = {}
-    )
-}
-
-
-@Composable
-fun CreateAccountHeader(modifier: Modifier = Modifier, mainTitle: String, description: String?, backBtnContentDescription: String? = null) {
+fun CreateAccountHeader(
+    modifier: Modifier = Modifier,
+    mainTitle: String,
+    description: String?,
+    navController: NavController,
+    backBtnContentDescription: String? = null
+) {
     Column(modifier = modifier.fillMaxWidth()) {
         Image(
-            imageVector = Icons.Default.ArrowBack,
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = backBtnContentDescription,
             colorFilter = ColorFilter.tint(Color.White),
             modifier = Modifier
                 .padding(top = 4.dp)
                 .size(34.dp)
-                .padding(top = 6.dp, bottom = 6.dp, end = 6.dp),
+                .padding(top = 6.dp, bottom = 6.dp, end = 6.dp)
+                .clickable { navController.popBackStack() },
             contentScale = ContentScale.Crop
         )
 
@@ -117,35 +108,45 @@ fun UsernameTextField(
     username: MutableState<String>,
     isError: Boolean,
     errorText: String,
-    shouldCheckForError: Boolean
+    shouldCheckForError: Boolean,
+    onNext: (() -> Unit)? = null
 ) {
     val focusManager = LocalFocusManager.current
+
+    if (onNext != null) {
+        modifier.onPreviewKeyEvent {
+            if (it.key == Key.Tab && it.nativeKeyEvent.action == ACTION_DOWN) {
+                focusManager.moveFocus(FocusDirection.Down)
+                true
+            } else {
+                false
+            }
+        }
+    }
 
     OutlinedTextField(
         value = username.value,
         onValueChange = { username.value = it },
         placeholder = { Text(text = label, color = Grey) },
         modifier = modifier
-            .fillMaxWidth()
-            .onPreviewKeyEvent {
-                if (it.key == Key.Tab && it.nativeKeyEvent.action == ACTION_DOWN) {
-                    focusManager.moveFocus(FocusDirection.Down)
-                    true
-                } else {
-                    false
-                }
-            },
+            .fillMaxWidth(),
         colors = getSignInTextFieldColors(),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Email
         ),
         supportingText = {
-            if (isError)
+            if (isError && shouldCheckForError)
                 Text(text = errorText, fontSize = 11.sp, fontFamily = PoppinsFont)
         }, isError = isError && shouldCheckForError,
         singleLine = true,
-        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                if (onNext == null)
+                    focusManager.moveFocus(FocusDirection.Down)
+                else
+                    onNext()
+            }),
         trailingIcon = {
             if (username.value.isNotEmpty())
                 ClearFieldButton {

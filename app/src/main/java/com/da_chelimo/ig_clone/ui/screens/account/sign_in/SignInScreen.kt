@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +53,9 @@ fun SignInScreen(navController: NavController) {
                 .fillMaxWidth()
         ) {
             val username = rememberSaveable { mutableStateOf("") }
+            var shouldCheckForError by remember {
+                mutableStateOf(false)
+            }
 
             UsernameTextField(
                 label = "Email address or mobile number",
@@ -57,7 +63,7 @@ fun SignInScreen(navController: NavController) {
                 modifier = Modifier.padding(horizontal = 12.dp),
                 isError = validateUserName(username.value) != null,
                 errorText = validateUserName(username.value) ?: "",
-                shouldCheckForError = true
+                shouldCheckForError = shouldCheckForError
             )
 
             val password = rememberSaveable { mutableStateOf("") }
@@ -67,24 +73,25 @@ fun SignInScreen(navController: NavController) {
                 performLogin = {},
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
-                    .padding(top = 16.dp)
             )
 
             SignInButton(
                 modifier = Modifier
                     .padding(horizontal = 12.dp)
-                    .padding(top = 16.dp),
+                    .padding(top = 20.dp),
                 buttonText = "Log In",
                 textColor = Color.White,
                 containerColor = BrightBlue,
                 outlineColor = Color.Transparent,
-                onClick = {}
+                onClick = {
+                    shouldCheckForError = true
+
+                }
             )
 
             SignInButton(
                 modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(top = 16.dp),
+                    .padding(horizontal = 12.dp),
                 buttonText = "Forgotten Password",
                 textColor = Color.White,
                 containerColor = Color.Transparent,
@@ -100,8 +107,8 @@ fun SignInScreen(navController: NavController) {
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp),
             buttonText = "Create New Account",
-            textColor = BrightBlue,
-            containerColor = Color.Transparent,
+            textColor = Color.White,
+            containerColor = SignInBlue,
             outlineColor = BrightBlue,
             onClick = {
                 navController.navigate(Screens.CreateAccountWithEmail.navigateHere())

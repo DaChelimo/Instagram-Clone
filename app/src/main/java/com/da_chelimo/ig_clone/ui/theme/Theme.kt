@@ -2,6 +2,7 @@ package com.da_chelimo.ig_clone.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.View
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 private val DarkColorScheme = darkColorScheme(
     primary = Black,
@@ -82,18 +85,11 @@ fun IGCloneTheme(
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            val insetsController = WindowCompat.getInsetsController(window, view)
-            window.statusBarColor = colorScheme.primary.toArgb()
-            window.navigationBarColor = colorScheme.primary.toArgb()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                window.navigationBarDividerColor = colorScheme.primary.toArgb()
-            }
-            insetsController.isAppearanceLightStatusBars = !darkTheme
-            insetsController.isAppearanceLightNavigationBars = !darkTheme
-        }
+        ChangeSystemBarColors(
+            systemBarColor = if (Firebase.auth.currentUser != null) colorScheme.primary else SignInBlue,
+            isDarkTheme = darkTheme,
+            view = view
+        )
     }
 
     MaterialTheme(
@@ -103,3 +99,19 @@ fun IGCloneTheme(
     )
 }
 
+
+@Composable
+fun ChangeSystemBarColors(systemBarColor: Color, isDarkTheme: Boolean, view: View) {
+    SideEffect {
+        val window = (view.context as Activity).window
+        val insetsController = WindowCompat.getInsetsController(window, view)
+        window.statusBarColor = systemBarColor.toArgb()
+        window.navigationBarColor = systemBarColor.toArgb()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.navigationBarDividerColor = systemBarColor.toArgb()
+        }
+        insetsController.isAppearanceLightStatusBars = !isDarkTheme
+        insetsController.isAppearanceLightNavigationBars = !isDarkTheme
+    }
+}

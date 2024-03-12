@@ -13,14 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.PasswordTextField
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
-import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 
 @Composable
-fun CreatePasswordScreen() {
+fun CreatePasswordScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,6 +37,7 @@ fun CreatePasswordScreen() {
             modifier = Modifier.padding(top = 4.dp),
             mainTitle = "Create a password",
             description = "Create a password with a least 6 letters or numbers. It should be something that others can't guess.",
+            navController = navController,
             backBtnContentDescription = "Go Back Button"
         )
 
@@ -69,5 +72,5 @@ fun CreatePasswordScreen() {
 @Preview
 @Composable
 fun PreviewCreatePasswordScreen() {
-    CreatePasswordScreen()
+    CreatePasswordScreen(rememberNavController())
 }
