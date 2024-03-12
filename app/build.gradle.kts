@@ -75,6 +75,9 @@ dependencies {
     implementation("net.danlew:android.joda:2.12.7")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
+    // Splash screens support
+    implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
+
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("com.google.dagger:hilt-android:2.50")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")

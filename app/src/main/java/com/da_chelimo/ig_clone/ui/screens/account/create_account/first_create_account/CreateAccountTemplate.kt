@@ -62,6 +62,7 @@ fun CreateAccountScreen(
         val signUpName = remember {
             mutableStateOf("")
         }
+
         UsernameTextField(
             label = signUpLabel,
             username = signUpName,

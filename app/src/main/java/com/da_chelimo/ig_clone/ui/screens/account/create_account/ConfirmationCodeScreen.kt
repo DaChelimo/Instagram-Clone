@@ -14,6 +14,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,18 +23,26 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.da_chelimo.ig_clone.models.SignInOptions
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.getSignInTextFieldColors
 import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountHeader
+import com.da_chelimo.ig_clone.ui.screens.account.create_account.first_create_account.CreateAccountViewModel
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.Grey
 import com.da_chelimo.ig_clone.ui.theme.PoppinsFont
 import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 import com.da_chelimo.ig_clone.ui.theme.TextFieldUnfocusedBorderBlue
 import com.da_chelimo.ig_clone.utils.verifyCodeLength
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
-fun ConfirmationCodeScreen(emailOrNumber: String) {
+fun ConfirmationCodeScreen(emailOrNumber: String, signInOptions: SignInOptions, coroutineScope: CoroutineScope) {
+    val viewModel = viewModel<CreateAccountViewModel>()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,8 +71,14 @@ fun ConfirmationCodeScreen(emailOrNumber: String) {
             isError = verifyCodeLength(code.value),
             shouldCheckForError = shouldCheckForError,
             errorText = "Code should be 6-digits long",
-            processCode = {
-                // TODO: processCode
+            processCode = { smsCode ->
+                coroutineScope.launch {
+                    try {
+                        viewModel.verifyConfirmationCode(smsCode)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+                }
             }
         )
 
@@ -75,7 +90,13 @@ fun ConfirmationCodeScreen(emailOrNumber: String) {
             outlineColor = Color.Transparent,
             onClick = {
                 shouldCheckForError = true
-//                onProceedWithSignUp(signUpName.value)
+                coroutineScope.launch {
+                    try {
+                        viewModel.verifyConfirmationCode(code.value)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+                }
             }
         )
 
@@ -128,5 +149,9 @@ fun CodeTextField(
 @Preview
 @Composable
 fun PreviewConfirmationCode() {
-    ConfirmationCodeScreen(emailOrNumber = "andrewchelimo2000@gmail.com")
+    ConfirmationCodeScreen(
+        emailOrNumber = "andrewchelimo2000@gmail.com",
+        signInOptions = SignInOptions.EMAIL,
+        coroutineScope = rememberCoroutineScope()
+    )
 }

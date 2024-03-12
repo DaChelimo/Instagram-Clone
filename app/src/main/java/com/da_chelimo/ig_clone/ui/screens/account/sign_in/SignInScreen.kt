@@ -17,7 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.da_chelimo.ig_clone.R
+import com.da_chelimo.ig_clone.models.Screens
 import com.da_chelimo.ig_clone.ui.components.sign_in.PasswordTextField
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.UsernameTextField
@@ -26,7 +29,7 @@ import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 import com.da_chelimo.ig_clone.utils.validateUserName
 
 @Composable
-fun SignInScreen() {
+fun SignInScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -100,7 +103,9 @@ fun SignInScreen() {
             textColor = BrightBlue,
             containerColor = Color.Transparent,
             outlineColor = BrightBlue,
-            onClick = {}
+            onClick = {
+                navController.navigate(Screens.CreateAccountWithEmail.navigateHere())
+            }
         )
     }
 }
@@ -108,7 +113,7 @@ fun SignInScreen() {
 @Preview
 @Composable
 fun PreviewSignInScreen() {
-    SignInScreen()
+    SignInScreen(rememberNavController())
 }
 
 
