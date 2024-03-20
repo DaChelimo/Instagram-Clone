@@ -1,5 +1,15 @@
 package com.da_chelimo.ig_clone
 
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
-class App {
+@HiltAndroidApp
+class App: Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        Timber.plant(Timber.DebugTree())
+    }
+
 }

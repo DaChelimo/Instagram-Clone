@@ -1,5 +1,6 @@
 package com.da_chelimo.ig_clone.ui.screens.profile
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,7 +22,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Add
@@ -31,6 +32,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -54,71 +56,81 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.da_chelimo.ig_clone.R
 import com.da_chelimo.ig_clone.models.User
 import com.da_chelimo.ig_clone.models.media.ImagePost
 import com.da_chelimo.ig_clone.models.state.FetchState
+import com.da_chelimo.ig_clone.navigation.JetNavController
 import com.da_chelimo.ig_clone.ui.components.CircularUserImage
 import com.da_chelimo.ig_clone.ui.components.MiniImagePost
+import com.da_chelimo.ig_clone.ui.screens.home.BottomNavBar
 import com.da_chelimo.ig_clone.ui.theme.PoppinsFont
 import com.da_chelimo.ig_clone.ui.theme.PreviewDarkTheme
 import com.da_chelimo.ig_clone.utils.toFormattedNumWithSymbols
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProfileScreen(userID: String, navController: NavController) {
+fun ProfileScreen(userID: String, jetNavController: JetNavController) {
     val viewModel = viewModel<ProfileViewModel>()
     viewModel.loadUser(userID)
-
 
     val user by viewModel.user.observeAsState()
     val fetchState by viewModel.fetchState.observeAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        ProfileTopBar(
-            modifier = Modifier.fillMaxWidth(),
-            username = user?.username,
-            openAccountsBottomDrawer = {},
-            isMyAccount = userID == Firebase.auth.currentUser?.uid,
-            onNavigateBackIfOthersProfile = { navController.popBackStack() },
-            createPost = {},
-            openMenu = {}
-        )
-
-        if (fetchState == FetchState.LOADING) {
-            Column(verticalArrangement = Arrangement.Center) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
-        }
-        else if (fetchState == FetchState.DONE && user != null) {
-            ProfileHeader(
-                user = user,
-                editProfile = { /*TODO*/ },
-                shareProfile = {}
+    Scaffold(bottomBar = { BottomNavBar(jetNavController = jetNavController) }) { _ ->
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            ProfileTopBar(
+                modifier = Modifier.fillMaxWidth(),
+                username = user?.username,
+                openAccountsBottomDrawer = {},
+                isMyAccount = userID == Firebase.auth.currentUser?.uid,
+                onNavigateBackIfOthersProfile = { jetNavController.upPress() },
+                createPost = {
+                    jetNavController.navigateToRequestForPost()
+                },
+                openMenu = {}
             )
 
-            ProfileMedia(listOfImagePost = viewModel.listOfImagePost, openPost = {})
-        } else {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = null,
-                    modifier = Modifier.size(120.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
+            if (fetchState == FetchState.LOADING) {
+                Column(verticalArrangement = Arrangement.Center) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
+            } else if (fetchState == FetchState.DONE && user != null) {
+                ProfileHeader(
+                    user = user,
+                    editProfile = { /*TODO*/ },
+                    shareProfile = {}
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "No network available", fontSize = 17.sp, fontFamily = PoppinsFont)
+
+                ProfileMedia(listOfImagePost = viewModel.listOfImagePost, openPost = {})
+            } else {
+                NoNetworkAvailable()
             }
         }
+    }
+}
+
+@Composable
+private fun NoNetworkAvailable(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Info,
+            contentDescription = null,
+            modifier = Modifier.size(120.dp),
+            tint = MaterialTheme.colorScheme.onPrimary
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "No network available", fontSize = 17.sp, fontFamily = PoppinsFont)
     }
 }
 
@@ -145,7 +157,7 @@ fun ProfileTopBar(
 
             if (!isMyAccount) {
                 Icon(
-                    Icons.Default.ArrowBack,
+                    Icons.AutoMirrored.Filled.ArrowBack,
                     "Back Button",
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
@@ -199,18 +211,18 @@ fun ProfileTopBar(
 }
 
 //@Preview
-@Composable
-fun PreviewProfileTopBar() {
-    PreviewDarkTheme {
-        ProfileTopBar(
-            username = "mini_chelimo",
-            isMyAccount = false,
-            onNavigateBackIfOthersProfile = {},
-            openAccountsBottomDrawer = {},
-            createPost = {},
-            openMenu = {})
-    }
-}
+//@Composable
+//fun PreviewProfileTopBar() {
+//    PreviewDarkTheme {
+//        ProfileTopBar(
+//            username = "mini_chelimo",
+//            isMyAccount = false,
+//            onNavigateBackIfOthersProfile = {},
+//            openAccountsBottomDrawer = {},
+//            createPost = {},
+//            openMenu = {})
+//    }
+//}
 
 
 @Composable
@@ -241,9 +253,9 @@ fun ProfileHeader(user: User?, editProfile: () -> Unit, shareProfile: () -> Unit
         }
         Text(
             text = user?.fullName ?: "",
-            fontSize = 14.sp,
+            fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(top = 4.dp, start = 8.dp)
+            modifier = Modifier.padding(top = 6.dp, start = 12.dp)
         )
         Text(
             text = user?.bio ?: "",
@@ -320,7 +332,7 @@ fun ProfileHighlights() {
                 .clip(CircleShape)
                 .size(60.dp)
                 .border(1.dp, MaterialTheme.colorScheme.onPrimary, CircleShape)
-                .padding(12.dp),
+                .padding(16.dp),
             tint = MaterialTheme.colorScheme.onPrimary
         )
         Text(
@@ -364,10 +376,14 @@ fun ProfileStat(count: Int?, name: String) {
             text = count?.toFormattedNumWithSymbols() ?: "0",
             modifier = Modifier.align(Alignment.CenterHorizontally),
             fontWeight = FontWeight.Bold,
-            fontSize = 15.sp
+            fontSize = 18.sp
         )
         Spacer(modifier = Modifier.height(2.dp))
-        Text(text = name, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterHorizontally))
+        Text(
+            text = name,
+            fontSize = 14.sp,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
     }
 }
 
@@ -401,7 +417,9 @@ fun ProfileMedia(listOfImagePost: LiveData<List<ImagePost>>, openPost: (ImagePos
                     painterResource(id = R.drawable.ic_grid),
                     "View photos",
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(vertical = 10.dp)
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+                        .size(22.dp)
                 )
             }
 
@@ -412,7 +430,9 @@ fun ProfileMedia(listOfImagePost: LiveData<List<ImagePost>>, openPost: (ImagePos
                     painterResource(id = R.drawable.rounded_video),
                     "View reels",
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(vertical = 10.dp)
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+                        .size(22.dp)
                 )
             }
         }
@@ -438,7 +458,11 @@ fun PreviewProfileMedia() {
 fun ImagesGrid(listOfSimpleImage: LiveData<List<ImagePost>>, openPost: (ImagePost) -> Unit) {
     val imagePosts by listOfSimpleImage.observeAsState(initial = listOf<ImagePost>())
 
-    LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        horizontalArrangement = Arrangement.spacedBy(1.dp),
+        verticalArrangement = Arrangement.spacedBy(1.dp)
+    ) {
         items(imagePosts) { imagePost ->
             MiniImagePost(imagePost = imagePost, openPost = openPost)
         }

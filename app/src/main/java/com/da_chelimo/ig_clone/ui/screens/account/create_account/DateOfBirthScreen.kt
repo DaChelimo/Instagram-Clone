@@ -27,8 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.models.OldScreens
+import com.da_chelimo.ig_clone.navigation.JetNavController
+import com.da_chelimo.ig_clone.navigation.rememberJetNavController
 import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.getSignInTextFieldColors
@@ -43,7 +44,7 @@ import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateOfBirthScreen(navController: NavController) {
+fun DateOfBirthScreen(jetNavController: JetNavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +59,7 @@ fun DateOfBirthScreen(navController: NavController) {
             modifier = Modifier,
             mainTitle = "What's your date of birth?",
             description = "Use your own date of birth, even if this account is for a business, a pet or something else. No one will see this unless you choose to share it.",
-            navController = navController,
+            jetNavController = jetNavController,
             backBtnContentDescription = "Go Back Button"
         )
 
@@ -145,7 +146,7 @@ fun DateOfBirthScreen(navController: NavController) {
             containerColor = BrightBlue,
             outlineColor = Color.Transparent,
             onClick = {
-                navController.navigate(Screens.CreateUsername.navigateHere(dateOfBirth.toString()))
+                jetNavController.navigateToCreateUsername(dateOfBirth)
             }
         )
     }
@@ -154,5 +155,5 @@ fun DateOfBirthScreen(navController: NavController) {
 @Preview
 @Composable
 fun PreviewDateOfBirthScreen() {
-    DateOfBirthScreen(rememberNavController())
+    DateOfBirthScreen(rememberJetNavController())
 }

@@ -37,6 +37,8 @@ class UserRepo {
             .await()
     }
 
+    suspend fun getCurrentUser() = fetchUser(Firebase.auth.uid!!)
+
     suspend fun fetchUser(userID: String) =
         fireStore.collection(USERS)
             .document(userID)

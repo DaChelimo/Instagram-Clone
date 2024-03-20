@@ -16,9 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.models.OldScreens
+import com.da_chelimo.ig_clone.navigation.JetNavController
+import com.da_chelimo.ig_clone.navigation.Screens
+import com.da_chelimo.ig_clone.navigation.rememberJetNavController
 import com.da_chelimo.ig_clone.ui.components.CircularUserImage
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
@@ -27,7 +29,7 @@ import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 import com.da_chelimo.ig_clone.ui.theme.TextFieldUnfocusedLabelBlue
 
 @Composable
-fun AddProfilePicScreen(navController: NavController) {
+fun AddProfilePicScreen(jetNavController: JetNavController) {
     Box(modifier = Modifier
         .fillMaxSize()
         .background(SignInBlue)) {
@@ -91,10 +93,7 @@ fun AddProfilePicScreen(navController: NavController) {
                 containerColor = Color.Transparent,
                 outlineColor = TextFieldUnfocusedLabelBlue,
                 onClick = {
-                    navController.navigate(Screens.Home.getNavRoute()) {
-//                        popUpTo(Screens.Home.getNavRoute())
-                        launchSingleTop = true
-                    }
+                    jetNavController.navigateToBottomBarRoute(Screens.HOME)
                 }
             )
         }
@@ -104,5 +103,5 @@ fun AddProfilePicScreen(navController: NavController) {
 @Preview
 @Composable
 fun PreviewAddProfilePicScreen() {
-    AddProfilePicScreen(rememberNavController())
+    AddProfilePicScreen(rememberJetNavController())
 }

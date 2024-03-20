@@ -25,8 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.models.OldScreens
+import com.da_chelimo.ig_clone.navigation.JetNavController
+import com.da_chelimo.ig_clone.navigation.rememberJetNavController
 import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.getSignInTextFieldColors
@@ -45,7 +46,7 @@ import timber.log.Timber
 fun ConfirmationCodeScreen(
     number: String,
     coroutineScope: CoroutineScope,
-    navController: NavHostController
+    jetNavController: JetNavController
 ) {
     val viewModel = viewModel<CreateAccountViewModel>()
 
@@ -63,7 +64,7 @@ fun ConfirmationCodeScreen(
             modifier = Modifier,
             mainTitle = "Enter the confirmation code",
             description = "To confirm your account, enter the 6-digit code that we sent to $number",
-            navController = navController,
+            jetNavController = jetNavController,
             backBtnContentDescription = "Go Back Button"
         )
 
@@ -100,9 +101,7 @@ fun ConfirmationCodeScreen(
                 coroutineScope.launch {
                     try {
                         viewModel.verifyConfirmationCode(code.value)
-                        navController.navigate(
-                            Screens.DateOfBirth.getNavRoute()
-                        )
+                        jetNavController.navigateToDateOfBirth()
                     } catch (e: Exception) {
                         Timber.e(e)
                     }
@@ -162,6 +161,6 @@ fun PreviewConfirmationCode() {
     ConfirmationCodeScreen(
         number = "andrewchelimo2000@gmail.com",
         coroutineScope = rememberCoroutineScope(),
-        navController = rememberNavController()
+        jetNavController = rememberJetNavController()
     )
 }

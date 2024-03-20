@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -20,19 +21,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.da_chelimo.ig_clone.R
-import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.models.OldScreens
+import com.da_chelimo.ig_clone.navigation.JetNavController
+import com.da_chelimo.ig_clone.navigation.rememberJetNavController
 import com.da_chelimo.ig_clone.ui.components.sign_in.PasswordTextField
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.UsernameTextField
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 import com.da_chelimo.ig_clone.utils.validateUserName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignInScreen(jetNavController: JetNavController, coroutineScope: CoroutineScope) {
+    val viewModel = viewModel<SignInViewModel>()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -86,6 +93,10 @@ fun SignInScreen(navController: NavController) {
                 onClick = {
                     shouldCheckForError = true
 
+                    if (validateUserName(username.value) == null)
+                        coroutineScope.launch {
+                            viewModel.signInWithEmailAndPassword(username.value, password.value)
+                        }
                 }
             )
 
@@ -111,7 +122,7 @@ fun SignInScreen(navController: NavController) {
             containerColor = SignInBlue,
             outlineColor = BrightBlue,
             onClick = {
-                navController.navigate(Screens.CreateAccountWithEmail.navigateHere())
+                jetNavController.navigateToCreateAccountWithEmail()
             }
         )
     }
@@ -120,7 +131,7 @@ fun SignInScreen(navController: NavController) {
 @Preview
 @Composable
 fun PreviewSignInScreen() {
-    SignInScreen(rememberNavController())
+    SignInScreen(rememberJetNavController(), rememberCoroutineScope())
 }
 
 

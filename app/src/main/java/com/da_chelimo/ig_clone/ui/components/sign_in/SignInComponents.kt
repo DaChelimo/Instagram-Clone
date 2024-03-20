@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -46,8 +45,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.da_chelimo.ig_clone.R
+import com.da_chelimo.ig_clone.navigation.JetNavController
 import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.ErrorRed
 import com.da_chelimo.ig_clone.ui.theme.Grey
@@ -63,7 +62,7 @@ fun CreateAccountHeader(
     modifier: Modifier = Modifier,
     mainTitle: String,
     description: String?,
-    navController: NavController,
+    jetNavController: JetNavController,
     backBtnContentDescription: String? = null
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -75,7 +74,7 @@ fun CreateAccountHeader(
                 .padding(top = 4.dp)
                 .size(34.dp)
                 .padding(top = 6.dp, bottom = 6.dp, end = 6.dp)
-                .clickable { navController.popBackStack() },
+                .clickable { jetNavController.upPress() },
             contentScale = ContentScale.Crop
         )
 

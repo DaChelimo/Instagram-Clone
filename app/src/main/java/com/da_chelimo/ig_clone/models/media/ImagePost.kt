@@ -5,11 +5,13 @@ data class ImagePost(
     var caption: String,
     val imageUrl: String,
     val dateUploaded: Long,
-    val userIcon: String,
+    val userIcon: String?,
     val userName: String,
     var likeCount: Int,
     var commentCount: Int
 ) {
+
+    constructor() : this("", "", "", 0, "", "", 0, 0)
 
     companion object {
         val TEST_POST = ImagePost(

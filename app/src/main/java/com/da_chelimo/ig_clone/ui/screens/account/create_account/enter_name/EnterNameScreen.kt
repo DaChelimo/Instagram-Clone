@@ -17,8 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.models.OldScreens
+import com.da_chelimo.ig_clone.navigation.JetNavController
+import com.da_chelimo.ig_clone.navigation.rememberJetNavController
 import com.da_chelimo.ig_clone.ui.components.sign_in.ClearFieldButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
@@ -27,7 +28,7 @@ import com.da_chelimo.ig_clone.ui.theme.BrightBlue
 import com.da_chelimo.ig_clone.ui.theme.SignInBlue
 
 @Composable
-fun EnterNameScreen(navController: NavController) {
+fun EnterNameScreen(jetNavController: JetNavController) {
     val viewModel = viewModel<EnterNameViewModel>()
 
     Column(
@@ -40,7 +41,7 @@ fun EnterNameScreen(navController: NavController) {
             modifier = Modifier.padding(top = 4.dp),
             mainTitle = "What's your name?",
             description = null,
-            navController = navController,
+            jetNavController = jetNavController,
             backBtnContentDescription = "Go Back Button"
         )
 
@@ -74,7 +75,7 @@ fun EnterNameScreen(navController: NavController) {
 //                onProceedWithSignUp(signUpName.value)
                 if (fullName.isNotBlank()) {
                     viewModel.enterName(fullName)
-                    navController.navigate(Screens.AddProfilePicScreen.getNavRoute())
+                    jetNavController.navigateToAddProfilePic()
                 }
             }
         )
@@ -84,6 +85,6 @@ fun EnterNameScreen(navController: NavController) {
 @Preview
 @Composable
 fun PreviewEnterNameScreen() {
-    EnterNameScreen(rememberNavController())
+    EnterNameScreen(rememberJetNavController())
 }
 

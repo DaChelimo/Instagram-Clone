@@ -23,8 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.models.OldScreens
+import com.da_chelimo.ig_clone.navigation.JetNavController
+import com.da_chelimo.ig_clone.navigation.rememberJetNavController
 import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
 import com.da_chelimo.ig_clone.ui.components.sign_in.getSignInTextFieldColors
@@ -34,7 +35,7 @@ import com.da_chelimo.ig_clone.ui.theme.TextFieldUnfocusedBorderBlue
 import com.da_chelimo.ig_clone.utils.validateUserName
 
 @Composable
-fun CreateUsernameScreen(navController: NavController, dateOfBirth: Long) {
+fun CreateUsernameScreen(jetNavController: JetNavController, dateOfBirth: Long) {
     val viewModel = viewModel<CreateUsernameViewModel>()
 
     Column(
@@ -47,12 +48,15 @@ fun CreateUsernameScreen(navController: NavController, dateOfBirth: Long) {
             modifier = Modifier.padding(top = 4.dp),
             mainTitle = "Create a  username",
             description = "Add a username. You can change this any time.",
-            navController = navController,
+            jetNavController = jetNavController,
             backBtnContentDescription = "Go Back Button"
         )
 
         var username by remember {
             mutableStateOf("")
+        }
+        var shouldCheckForError by remember {
+            mutableStateOf(false)
         }
 
         OutlinedTextField(
@@ -62,11 +66,11 @@ fun CreateUsernameScreen(navController: NavController, dateOfBirth: Long) {
             value = username,
             onValueChange = { username = it },
             colors = getSignInTextFieldColors(),
-            isError = validateUserName(username) != null,
+            isError = validateUserName(username) != null && shouldCheckForError,
             supportingText = {
                 val errorText = validateUserName(username)
 
-                if (errorText != null) Text(text = errorText)
+                if (errorText != null && shouldCheckForError) Text(text = errorText)
             },
             trailingIcon = {
                 Icon(
@@ -87,11 +91,12 @@ fun CreateUsernameScreen(navController: NavController, dateOfBirth: Long) {
             outlineColor = Color.Transparent,
             onClick = {
                 username = username.trim()
+                shouldCheckForError = true
 
                 // TODO: Add a check here
                 if (validateUserName(username) == null) {
                     viewModel.createUsername(username, dateOfBirth)
-                    navController.navigate(Screens.EnterNameScreen.getNavRoute())
+                    jetNavController.navigateToEnterName()
                 }
             }
         )
@@ -101,6 +106,6 @@ fun CreateUsernameScreen(navController: NavController, dateOfBirth: Long) {
 @Preview
 @Composable
 fun PreviewCreateUsernameScreen() {
-    CreateUsernameScreen(rememberNavController(), 1710277469758)
+    CreateUsernameScreen(rememberJetNavController(), 1710277469758)
 }
 

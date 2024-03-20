@@ -13,11 +13,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class ProfileViewModel @Inject constructor(
-    private val userRepo: UserRepo,
-    private val mediaRepo: MediaRepo
-): ViewModel() {
+class ProfileViewModel: ViewModel() {
+    private val userRepo = UserRepo()
+    private val mediaRepo = MediaRepo()
 
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user

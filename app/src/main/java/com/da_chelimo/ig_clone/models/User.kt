@@ -12,6 +12,8 @@ data class User(
     var following: Int
 ) {
 
+    constructor(): this("","","","",0,"",0,0,0)
+
     companion object {
         val TEST_USER = User(
             uid = "123abc",

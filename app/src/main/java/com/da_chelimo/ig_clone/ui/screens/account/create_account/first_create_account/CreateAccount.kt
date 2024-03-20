@@ -22,10 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.da_chelimo.ig_clone.models.Screens
+import com.da_chelimo.ig_clone.models.OldScreens
+import com.da_chelimo.ig_clone.navigation.JetNavController
+import com.da_chelimo.ig_clone.navigation.rememberJetNavController
 import com.da_chelimo.ig_clone.ui.components.sign_in.CreateAccountHeader
 import com.da_chelimo.ig_clone.ui.components.sign_in.PasswordTextField
 import com.da_chelimo.ig_clone.ui.components.sign_in.SignInButton
@@ -54,7 +53,7 @@ navigateToConfirmationScreen contains:
  */
 @Composable
 fun CreateAccountWithNumber(
-    navController: NavController
+    jetNavController: JetNavController
 ) {
     val viewModel = viewModel<CreateAccountViewModel>()
     val activity = LocalContext.current.getActivity()
@@ -73,7 +72,7 @@ fun CreateAccountWithNumber(
             modifier = Modifier.padding(top = 4.dp),
             mainTitle = "What's your mobile number?",
             description = "Enter the mobile number on which you can be contacted. No one will see this on your profile.",
-            navController = navController,
+            jetNavController = jetNavController,
             backBtnContentDescription = "Return back to Log In Screen"
         )
 
@@ -125,9 +124,7 @@ fun CreateAccountWithNumber(
 
                 if (isNumberValid) {
                     viewModel.signInWithNumber(fullPhoneNumber, activity)
-                    navController.navigate(
-                        Screens.ConfirmationCode.navigateHere(fullPhoneNumber)
-                    )
+                    jetNavController.navigateToConfirmationCode(fullPhoneNumber)
                 }
             }
         )
@@ -137,7 +134,7 @@ fun CreateAccountWithNumber(
             textColor = Color.White,
             containerColor = Color.Transparent,
             outlineColor = TextFieldUnfocusedBorderBlue,
-            onClick = { navController.popBackStack() }
+            onClick = { jetNavController.upPress() }
         )
     }
 }
@@ -145,13 +142,13 @@ fun CreateAccountWithNumber(
 @Preview
 @Composable
 fun PreviewCreateAccountWithNumber() {
-    CreateAccountWithNumber(navController = rememberNavController())
+    CreateAccountWithNumber(jetNavController = rememberJetNavController())
 }
 
 
 @Composable
 fun CreateAccountWithEmail(
-    navController: NavHostController,
+    jetNavController: JetNavController,
     coroutineScope: CoroutineScope
 ) {
     val viewModel = viewModel<CreateAccountViewModel>()
@@ -174,7 +171,7 @@ fun CreateAccountWithEmail(
             modifier = Modifier.padding(top = 4.dp),
             mainTitle = "What's your email address?",
             description = "Enter the email address on which you can be contacted. No one will see this on your profile.",
-            navController = navController,
+            jetNavController = jetNavController,
             backBtnContentDescription = "Return back to Log In Screen"
         )
 
@@ -202,9 +199,10 @@ fun CreateAccountWithEmail(
 
                 if (verifyEmailIsValid(email.value) && verifyPassword(password.value)) {
                     viewModel.signInWithNumber(email.value, activity)
-                    navController.navigate(
-                        Screens.ConfirmationCode.navigateHere(email.value, password.value)
-                    )
+                    jetNavController.navigateToConfirmationCode(email.value)
+//                    navigate(
+//                        OldScreens.ConfirmationCode.navigateHere(email.value, password.value)
+//                    )
                 }
             }
         )
@@ -221,9 +219,7 @@ fun CreateAccountWithEmail(
                 if (verifyEmailIsValid(email.value) && verifyPassword(password.value)) {
                     coroutineScope.launch {
                         viewModel.signInWithEmail(email.value, password.value, activity)
-                        navController.navigate(
-                            Screens.DateOfBirth.navigateHere()
-                        )
+                        jetNavController.navigateToDateOfBirth()
                     }
                 }
             }
@@ -235,9 +231,7 @@ fun CreateAccountWithEmail(
             containerColor = Color.Transparent,
             outlineColor = TextFieldUnfocusedBorderBlue,
             onClick = {
-                navController.navigate(
-                    Screens.CreateAccountWithNumber.navigateHere()
-                )
+                jetNavController.navigateToCreateAccountWithNumber()
             }
         )
     }
@@ -246,5 +240,5 @@ fun CreateAccountWithEmail(
 @Preview
 @Composable
 fun PreviewCreateAccountWithEmail() {
-    CreateAccountWithEmail(rememberNavController(), rememberCoroutineScope())
+    CreateAccountWithEmail(rememberJetNavController(), rememberCoroutineScope())
 }

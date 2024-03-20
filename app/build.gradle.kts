@@ -69,6 +69,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
 
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
@@ -77,6 +78,8 @@ dependencies {
 
     implementation("net.danlew:android.joda:2.12.7")
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("com.guolindev.permissionx:permissionx:1.7.1")
+//    implementation("com.himanshoe:pluck:1.0.0-RC2")
 
     // Splash screens support
     implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
